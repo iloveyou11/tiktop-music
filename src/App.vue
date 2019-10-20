@@ -2,7 +2,10 @@
   <div id="app">
     <m-header />
     <tab />
-    <router-view></router-view>
+    <!-- 可以将dom缓存到内存中，不需要重新渲染 -->
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -16,11 +19,3 @@ export default {
   }
 };
 </script>
-
-<style lang="stylus">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>

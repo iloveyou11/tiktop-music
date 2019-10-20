@@ -34,15 +34,27 @@
 //     }
 // };
 
-const path = require("path");
+// const path = require("path");
 
-function resolve(dir) {
-    return path.join(__dirname, dir);
-}
+// function resolve(dir) {
+//     return path.join(__dirname, dir);
+// }
+// module.exports = {
+//     chainWebpack: config => {
+//         config.resolve.alias
+//             .set("@", resolve("src"))
+//             .set("common", resolve("src/common"))
+//     },
+// }
+
 module.exports = {
-    chainWebpack: config => {
-        config.resolve.alias
-            .set("@", resolve("src"))
-            .set("common", resolve("src/common"))
+    configureWebpack: {
+        resolve: {
+            alias: {
+                'common': '@/common',
+                'components': '@/components',
+                'views': '@/views',
+            }
+        }
     },
 }
