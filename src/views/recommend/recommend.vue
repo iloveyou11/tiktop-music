@@ -3,62 +3,72 @@
     class="recommend"
     ref="recommend"
   >
-    <div>
-      <div
-        class="slider-wrapper"
-        v-if="recommends.length"
-      >
-        <slider>
-          <div
-            v-for="item in recommends"
-            :key="item.id"
-          >
-            <a :href="item.linkUrl">
-              <img
-                :src="item.picUrl"
-                alt="轮播图"
-              >
-            </a>
-          </div>
-        </slider>
-      </div>
-      <div class="recommend-list">
-        <h1 class="list-title">热门歌曲推荐</h1>
-        <ul>
-          <li
-            v-for="(item, index) in discList"
-            :key="index"
-            class="item"
-          >
-            <div class="icon">
-              <img
-                :src="item.imgurl"
-                alt="热门歌曲图片"
-                width="60"
-                height="60"
-              >
-              <div class="text">
-                <h2
-                  class="name"
-                  v-html="item.creator.name"
-                ></h2>
-                <p
-                  class="desc"
-                  v-html="item.dissname"
-                ></p>
-              </div>
+    <scroll
+      ref="scroll"
+      class="recommend-content"
+      :data="discList"
+    >
+      <div>
+        <div
+          class="slider-wrapper"
+          v-if="recommends.length"
+        >
+          <slider>
+            <div
+              v-for="item in recommends"
+              :key="item.id"
+            >
+              <a :href="item.linkUrl">
+                <img
+                  class="needsclick"
+                  :src="item.picUrl"
+                  @load="loadImg"
+                  alt="轮播图"
+                >
+              </a>
             </div>
-          </li>
-        </ul>
+          </slider>
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌曲推荐</h1>
+          <ul>
+            <li
+              v-for="(item, index) in discList"
+              :key="index"
+              class="item"
+            >
+              <div class="icon">
+                <img
+                  v-lazy="item.imgurl"
+                  alt="热门歌曲图片"
+                  width="60"
+                  height="60"
+                >
+              </div>
+              <div class="text">
+                <h2 class="name">{{item.creator.name}}</h2>
+                <p class="desc">{{item.dissname}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+      <div
+        class="loading-container"
+        v-show="!discList.length"
+      >
+        <loading></loading>
+      </div>
+    </scroll>
   </div>
 </template>
 
 <script>
 import { getRecommend, getDiscList } from "@/api/recommend";
 import { ERR_OK } from "@/api/config";
-import Slider from "@/base/slider/slider";
+import Slider from "@/base/slider";
+import Scroll from "@/base/scroll";
+import Loading from "@/base/loading";
 export default {
   data() {
     return {
@@ -67,13 +77,22 @@ export default {
     };
   },
   components: {
-    Slider
+    Slider,
+    Scroll,
+    Loading
   },
   created() {
     this._getRecommend();
     this._getDiscList();
   },
   methods: {
+    loadImg() {
+      // 设置checkload保证只执行一次，一张图片加载完即可撑开高度
+      if (!this.checkload) {
+        this.$refs.scroll.refresh();
+      }
+      this.checkload = true;
+    },
     _getRecommend() {
       getRecommend().then(res => {
         if (res.code === ERR_OK) {
@@ -84,7 +103,7 @@ export default {
     _getDiscList() {
       getDiscList().then(res => {
         if (res.code === ERR_OK) {
-          this.discList = res.data;
+          this.discList = res.data.list;
         }
       });
     }
@@ -130,6 +149,10 @@ export default {
           flex: 0 0 60px;
           width: 60px;
           padding-right: 20px;
+
+          img {
+            border-radius: 6px;
+          }
         }
 
         .text {
