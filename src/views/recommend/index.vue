@@ -36,6 +36,7 @@
               v-for="(item, index) in discList"
               :key="index"
               class="item"
+              @click="selectItem(item)"
             >
               <div class="icon">
                 <img
@@ -60,6 +61,8 @@
         <loading></loading>
       </div>
     </scroll>
+
+    <router-view></router-view>
   </div>
 </template>
 
@@ -70,6 +73,7 @@ import Slider from "@/base/slider";
 import Scroll from "@/base/scroll";
 import Loading from "@/base/loading";
 import { playlistMixin } from "@/common/js/mixin";
+import { mapMutations } from "vuex";
 
 export default {
   mixins: [playlistMixin],
@@ -89,6 +93,9 @@ export default {
     this._getDiscList();
   },
   methods: {
+    ...mapMutations({
+      setDisc: "SET_DISC"
+    }),
     handlePlaylist(playlist) {
       const bottom = playlist.length > 0 ? "60px" : "";
       this.$refs.recommend.style.bottom = bottom;
@@ -100,6 +107,12 @@ export default {
         this.$refs.scroll.refresh();
       }
       this.checkload = true;
+    },
+    selectItem(item) {
+      this.$router.push({
+        path: `/recommend/${item.dissid}`
+      });
+      this.setDisc(item);
     },
     _getRecommend() {
       getRecommend().then(res => {
