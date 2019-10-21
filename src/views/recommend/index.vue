@@ -69,7 +69,10 @@ import { ERR_OK } from "@/api/config";
 import Slider from "@/base/slider";
 import Scroll from "@/base/scroll";
 import Loading from "@/base/loading";
+import { playlistMixin } from "@/common/js/mixin";
+
 export default {
+  mixins: [playlistMixin],
   data() {
     return {
       recommends: [],
@@ -86,6 +89,11 @@ export default {
     this._getDiscList();
   },
   methods: {
+    handlePlaylist(playlist) {
+      const bottom = playlist.length > 0 ? "60px" : "";
+      this.$refs.recommend.style.bottom = bottom;
+      this.$refs.scroll.refresh();
+    },
     loadImg() {
       // 设置checkload保证只执行一次，一张图片加载完即可撑开高度
       if (!this.checkload) {

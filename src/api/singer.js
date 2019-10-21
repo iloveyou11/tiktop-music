@@ -3,6 +3,7 @@ import {
     commonParams,
     options
 } from './config'
+const baseUrl = 'http://localhost:9000'
 
 export function getSingerList() {
     const url = 'https://c.y.qq.com/v8/fcg-bin/v8.fcg'

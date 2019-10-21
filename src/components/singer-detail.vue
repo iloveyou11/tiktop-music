@@ -13,7 +13,7 @@ import { mapGetters } from "vuex";
 import { getSingerDetail } from "@/api/singer.js";
 import { ERR_OK } from "@/api/config";
 import { createSong } from "@/common/js/song";
-import musicList from "@/components/music-list/music-list";
+import musicList from "@/components/music-list";
 
 export default {
   data() {

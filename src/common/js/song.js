@@ -1,3 +1,11 @@
+import jsonp from './jsonp'
+import {
+    Base64
+} from 'js-base64'
+import {
+    getLyric
+} from '../../api/song'
+
 export default class Song {
     constructor({
         id,
@@ -17,6 +25,23 @@ export default class Song {
         this.duration = duration
         this.image = image
         this.url = url
+    }
+
+    getLyrics() {
+        if (this.lyric) {
+            return Promise.resolve(this.lyric)
+        }
+        return new Promise((resolve, reject) => {
+            getLyric(this.mid).then((res) => {
+                if (res.retcode === 0) {
+                    // 使用Base64进行歌词解码
+                    this.lyric = Base64.decode(res.lyric)
+                    resolve(this.lyric)
+                } else {
+                    reject('no lyrics')
+                }
+            })
+        })
     }
 }
 
@@ -42,5 +67,24 @@ function filterSinger(singer) {
 }
 
 function gteVkey(mid) {
+    // return `http://dl.stream.qqmusic.qq.com/C400${mid}.m4a?fromtag=38&guid=5931742855&vkey=${getSongVkey(mid)}`
     return 'http://ws.stream.qqmusic.qq.com/C100' + mid + '.m4a?fromtag=0&guid=126548448'
 }
+
+// export function getSongVkey(songmid) {
+//     const url = 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg'
+//     const data = Object.assign({}, {
+//         callback: 'musicJsonCallback',
+//         loginUin: 3051522991,
+//         format: 'jsonp',
+//         platform: 'yqq',
+//         needNewCode: 0,
+//         cid: 205361747,
+//         uin: 3051522991,
+//         guid: 5931742855,
+//         songmid: songmid,
+//         filename: `C400${songmid}.m4a`
+//     })
+
+//     return jsonp(url, data)
+// }
