@@ -10,8 +10,8 @@ export default {};
 </script>
 
 <style lang="stylus" scoped>
-@import '../../common/stylus/variables.styl';
-@import '../../common/stylus/mixin.styl';
+@import '~common/stylus/variables.styl';
+@import '~common/stylus/mixin.styl';
 
 .m-header {
   position: relative;

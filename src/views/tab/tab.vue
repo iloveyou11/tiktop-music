@@ -32,7 +32,7 @@
 </template>
 
 <style lang="stylus" scoped>
-@import '../../common/stylus/variables';
+@import '~common/stylus/variables';
 
 .tab {
   display: flex;

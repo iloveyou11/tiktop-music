@@ -1,36 +1,72 @@
 <template>
   <transition name="slide">
-    <div class="singer-detail">
-
-    </div>
+    <music-list
+      :songs="songs"
+      :title="title"
+      :bgImage="bgImage"
+    ></music-list>
   </transition>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { getSingerDetail } from "@/api/singer.js";
+import { ERR_OK } from "@/api/config";
+import { createSong } from "@/common/js/song";
+import musicList from "@/components/music-list/music-list";
+
 export default {
+  data() {
+    return {
+      songs: []
+    };
+  },
+  components: {
+    musicList
+  },
   computed: {
     // 相当于在vue的实例中挂载了singer这个属性
-    ...mapGetters(["singer"])
+    ...mapGetters(["singer"]),
+    title() {
+      return this.singer.name;
+    },
+    bgImage() {
+      return this.singer.avatar;
+    }
   },
   created() {
-    // console.log(this.singer);
+    this._getDetail();
+  },
+  methods: {
+    _getDetail() {
+      // 处理边界情况，如用户刷新详情页面，获取不到id，则自动返回歌手页面
+      if (!this.singer.id) {
+        this.$router.push("/singer");
+        return;
+      }
+      getSingerDetail(this.singer.id).then(res => {
+        if (res.code === ERR_OK) {
+          this.songs = this._normalizeSongs(res.data.list);
+          // console.log(this.songs);
+        }
+      });
+    },
+    _normalizeSongs(list) {
+      let ret = [];
+      list.forEach(item => {
+        let { musicData } = item;
+        if (musicData.songid && musicData.albummid) {
+          ret.push(createSong(musicData));
+        }
+      });
+      return ret;
+    }
   }
 };
 </script>
 
 <style lang="stylus" scoped>
-@import '../../common/stylus/variables.styl';
-
-.singer-detail {
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: $color-background;
-}
+@import '~common/stylus/variables.styl';
 
 // 从右向左滑入的动画
 .slide-enter-active, .slide-leave-active {
