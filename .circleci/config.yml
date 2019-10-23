@@ -10,11 +10,24 @@ jobs:
           fingerprints:
             - "80:92:60:ef:26:12:29:fe:77:0d:98:34:d8:34:79:ab"
       - checkout
+      - restore_cache:
+          keys:
+            - node_modules
       - run: echo "A first hello"
       - run: npm -v
       - run:
           name: Install
           command: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node_modules
       - run:
           name: Build
           command: yarn build
+      - run:
+          name: Deploy
+          # shell chmod+x 赋予权限
+          # 执行shell脚本
+          command: chmod +x scripts/deploy.sh
+          command: ./scripts/deploy.sh
