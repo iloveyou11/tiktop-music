@@ -57,14 +57,7 @@ export function createSong(musicData) {
         url: gteVkey(musicData.songmid)
     })
 }
-// singer是数组，而我们要的是字符串
-function filterSinger(singer) {
-    let ret = []
-    singer.forEach((item) => {
-        ret.push(item.name)
-    })
-    return ret.join('/')
-}
+
 
 function gteVkey(mid) {
     // return `http://dl.stream.qqmusic.qq.com/C400${mid}.m4a?fromtag=38&guid=5931742855&vkey=${getSongVkey(mid)}`
@@ -85,6 +78,16 @@ function gteVkey(mid) {
 //         songmid: songmid,
 //         filename: `C400${songmid}.m4a`
 //     })
-
 //     return jsonp(url, data)
 // }
+
+
+// singer是数组，而我们要的是字符串
+export function filterSinger(singer) {
+    let ret = []
+    if (!singer) return ''
+    singer.forEach(s => {
+        ret.push(s.name)
+    })
+    return ret.join('/')
+}
