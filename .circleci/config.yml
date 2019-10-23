@@ -26,8 +26,10 @@ jobs:
           name: Build
           command: yarn build
       - run:
-          name: Deploy
+          name: Prepare
           # shell chmod+x 赋予权限
-          # 执行shell脚本
           command: chmod +x scripts/deploy.sh
+      - run:
+          name: Deploy
+          # 执行shell脚本
           command: ./scripts/deploy.sh
